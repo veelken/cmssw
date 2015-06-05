@@ -28,6 +28,8 @@
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
 
+#include "RecoTauTag/TauTagTools/interface/ECALBounds.h"
+
 class  CaloRecoTauAlgorithm  {
  public:
   CaloRecoTauAlgorithm();  
@@ -73,8 +75,11 @@ class  CaloRecoTauAlgorithm  {
 
   TFormula myTrackerSignalConeSizeTFormula,myTrackerIsolConeSizeTFormula, myECALSignalConeSizeTFormula, myECALIsolConeSizeTFormula,myMatchingConeSizeTFormula; 
   
-edm::InputTag EBRecHitsLabel_,EERecHitsLabel_,ESRecHitsLabel_; 
+  edm::InputTag EBRecHitsLabel_;
+  edm::InputTag EERecHitsLabel_;
+  edm::InputTag ESRecHitsLabel_; 
 
+  ECALBounds ecalBounds_;
 };
 #endif 
 

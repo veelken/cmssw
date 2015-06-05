@@ -31,7 +31,7 @@ public:
   explicit TrajectoryStateOnSurface( BasicTrajectoryState* p) : Base(p) {}
   explicit TrajectoryStateOnSurface( BasicSingleTrajectoryState* p) : Base(p) {}
 
-  ~TrajectoryStateOnSurface() {}
+  ~TrajectoryStateOnSurface();
 
 #ifndef CMS_NOCXX11
 

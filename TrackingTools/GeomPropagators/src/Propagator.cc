@@ -5,6 +5,7 @@
 #include "DataFormats/GeometrySurface/interface/Cylinder.h"
 #include "DataFormats/GeometrySurface/interface/Plane.h"
 
+#include <typeinfo>
 
 Propagator::~Propagator() {}
 
@@ -15,13 +16,17 @@ std::pair< TrajectoryStateOnSurface, double>
 Propagator::propagateWithPath (const FreeTrajectoryState& state, 
 			       const Surface& sur) const
 {
+  //std::cout << "<Propagator::propagateWithPath>:" << std::endl;
+
   // try plane first, most probable case (disk "is a" plane too) 
   const Plane* bp = dynamic_cast<const Plane*>(&sur);
   if (bp != 0) return propagateWithPath( state, *bp);
-  
+
   // if not plane try cylinder
   const Cylinder* bc = dynamic_cast<const Cylinder*>(&sur);
   if (bc != 0) return propagateWithPath( state, *bc);
+
+  //std::cout << "typeid(sur) = " << typeid(sur).name() << std::endl;
 
   // unknown surface - can't do it!
   throw PropagationException("The surface is neither Cylinder nor Plane");

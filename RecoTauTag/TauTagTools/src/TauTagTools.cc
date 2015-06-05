@@ -181,10 +181,12 @@ void replaceSubStr(string& s,const string& oldSubStr,const string& newSubStr){
     return filteredPFGammaCands;
   }
   
-  math::XYZPoint propagTrackECALSurfContactPoint(const MagneticField* theMagField,TrackRef theTrack){ 
+  math::XYZPoint propagTrackECALSurfContactPoint(const MagneticField* theMagField, const TrackRef& theTrack, const ECALBounds& ecalBounds){ 
+    //std::cout << "<propagTrackECALSurfContactPoint>:" << std::endl;
+
     AnalyticalPropagator thefwdPropagator(theMagField,alongMomentum);
     math::XYZPoint propTrack_XYZPoint(0.,0.,0.);
-    
+
     // get the initial Track FreeTrajectoryState - at outermost point position if possible, else at innermost point position:
     GlobalVector theTrack_initialGV(0.,0.,0.);
     GlobalPoint theTrack_initialGP(0.,0.,0.);
@@ -198,8 +200,11 @@ void replaceSubStr(string& s,const string& oldSubStr,const string& newSubStr){
       GlobalPoint theTrack_initialinnermostGP(theTrack->innerPosition().x(),theTrack->innerPosition().y(),theTrack->innerPosition().z());
       theTrack_initialGV=theTrack_initialinnermostGV;
       theTrack_initialGP=theTrack_initialinnermostGP;
-    } else return (propTrack_XYZPoint);
-    GlobalTrajectoryParameters theTrack_initialGTPs(theTrack_initialGP,theTrack_initialGV,theTrack->charge(),&*theMagField);
+    } else {
+      return (propTrack_XYZPoint);
+    }
+
+    GlobalTrajectoryParameters theTrack_initialGTPs(theTrack_initialGP,theTrack_initialGV,theTrack->charge(),theMagField);
     // FIX THIS !!!
     // need to convert from perigee to global or helix (curvilinear) frame
     // for now just an arbitrary matrix.
@@ -207,33 +212,60 @@ void replaceSubStr(string& s,const string& oldSubStr,const string& newSubStr){
     CartesianTrajectoryError cov_CTE(covM);
     FreeTrajectoryState Track_initialFTS(theTrack_initialGTPs,cov_CTE);
     // ***
-  
+
+    std::cout << "processing track: Pt = " << theTrack->pt() << ", eta = " << theTrack->eta() << ", phi = " << theTrack->phi() << ", charge = " << theTrack->charge() << std::endl; 
+    //if ( theTrack->pt() < 1. ) return propTrack_XYZPoint;
+
     // propagate to ECAL surface: 
-    double ECALcorner_tantheta=ECALBounds::barrel_innerradius()/ECALBounds::barrel_halfLength();
-    TrajectoryStateOnSurface Track_propagatedonECAL_TSOS=thefwdPropagator.propagate((Track_initialFTS),ECALBounds::barrelBound());
-    if(!Track_propagatedonECAL_TSOS.isValid() || fabs(Track_propagatedonECAL_TSOS.globalParameters().position().perp()/Track_propagatedonECAL_TSOS.globalParameters().position().z())<ECALcorner_tantheta) {
-      if(Track_propagatedonECAL_TSOS.isValid() && fabs(Track_propagatedonECAL_TSOS.globalParameters().position().perp()/Track_propagatedonECAL_TSOS.globalParameters().position().z())<ECALcorner_tantheta){     
-	if(Track_propagatedonECAL_TSOS.globalParameters().position().eta()>0.){
-	  Track_propagatedonECAL_TSOS=thefwdPropagator.propagate((Track_initialFTS),ECALBounds::positiveEndcapDisk());
-	}else{ 
-	  Track_propagatedonECAL_TSOS=thefwdPropagator.propagate((Track_initialFTS),ECALBounds::negativeEndcapDisk());
+    double ECALcorner_tantheta = ecalBounds.barrel_innerradius()/ecalBounds.barrel_halfLength();
+    TrajectoryStateOnSurface Track_propagatedonECAL_TSOS = thefwdPropagator.propagate(Track_initialFTS,ecalBounds.barrelBound());
+    GlobalPoint Track_propagatedonECAL_TSOS_position;
+    GlobalPoint Track_propagatedonECAL_TSOS_globalPosition;
+    bool Track_propagatedonECAL_TSOS_isValid = Track_propagatedonECAL_TSOS.isValid();
+    if ( Track_propagatedonECAL_TSOS_isValid ) {
+      Track_propagatedonECAL_TSOS_position = Track_propagatedonECAL_TSOS.globalParameters().position();
+      Track_propagatedonECAL_TSOS_globalPosition = Track_propagatedonECAL_TSOS.globalPosition();
+    }
+    if( !Track_propagatedonECAL_TSOS_isValid || fabs(Track_propagatedonECAL_TSOS_position.perp()/Track_propagatedonECAL_TSOS_position.z()) < ECALcorner_tantheta ) {
+      if ( Track_propagatedonECAL_TSOS_isValid && fabs(Track_propagatedonECAL_TSOS_position.perp()/Track_propagatedonECAL_TSOS_position.z()) < ECALcorner_tantheta ) {     
+	if ( Track_propagatedonECAL_TSOS_position.eta() > 0. ) {
+          TrajectoryStateOnSurface Track_propagatedonECAL_TSOS_endcap(thefwdPropagator.propagate(Track_initialFTS,ecalBounds.positiveEndcapDisk()));
+	  Track_propagatedonECAL_TSOS_isValid = Track_propagatedonECAL_TSOS_endcap.isValid();
+	  if ( Track_propagatedonECAL_TSOS_isValid ) {
+	    Track_propagatedonECAL_TSOS_globalPosition = Track_propagatedonECAL_TSOS_endcap.globalPosition();
+	  }
+	} else { 
+          TrajectoryStateOnSurface Track_propagatedonECAL_TSOS_endcap(thefwdPropagator.propagate(Track_initialFTS,ecalBounds.negativeEndcapDisk()));
+	  Track_propagatedonECAL_TSOS_isValid = Track_propagatedonECAL_TSOS_endcap.isValid();
+	  if ( Track_propagatedonECAL_TSOS_isValid ) {
+	    Track_propagatedonECAL_TSOS_globalPosition = Track_propagatedonECAL_TSOS_endcap.globalPosition();
+	  }
 	}
       }
-      if(!Track_propagatedonECAL_TSOS.isValid()){
-	if((Track_initialFTS).position().eta()>0.){
-	  Track_propagatedonECAL_TSOS=thefwdPropagator.propagate((Track_initialFTS),ECALBounds::positiveEndcapDisk());
-	}else{ 
-	  Track_propagatedonECAL_TSOS=thefwdPropagator.propagate((Track_initialFTS),ECALBounds::negativeEndcapDisk());
+      if ( !Track_propagatedonECAL_TSOS_isValid ) {
+	if ( (Track_initialFTS).position().eta() > 0. ){
+          TrajectoryStateOnSurface Track_propagatedonECAL_TSOS_endcap(thefwdPropagator.propagate(Track_initialFTS,ecalBounds.positiveEndcapDisk()));
+	  Track_propagatedonECAL_TSOS_isValid = Track_propagatedonECAL_TSOS_endcap.isValid();
+	  if ( Track_propagatedonECAL_TSOS_isValid ) {
+	    Track_propagatedonECAL_TSOS_globalPosition = Track_propagatedonECAL_TSOS_endcap.globalPosition();
+	  }
+	} else { 
+          TrajectoryStateOnSurface Track_propagatedonECAL_TSOS_endcap(thefwdPropagator.propagate(Track_initialFTS,ecalBounds.negativeEndcapDisk()));
+	  Track_propagatedonECAL_TSOS_isValid = Track_propagatedonECAL_TSOS_endcap.isValid();
+	  if ( Track_propagatedonECAL_TSOS_isValid ) {
+	    Track_propagatedonECAL_TSOS_globalPosition = Track_propagatedonECAL_TSOS_endcap.globalPosition();
+	  }
 	}
       }
     }
-    if(Track_propagatedonECAL_TSOS.isValid()){
-      math::XYZPoint validpropTrack_XYZPoint(Track_propagatedonECAL_TSOS.globalPosition().x(),
-					     Track_propagatedonECAL_TSOS.globalPosition().y(),
-					     Track_propagatedonECAL_TSOS.globalPosition().z());
+    if ( Track_propagatedonECAL_TSOS_isValid ) {
+      math::XYZPoint validpropTrack_XYZPoint(Track_propagatedonECAL_TSOS_globalPosition.x(),
+					     Track_propagatedonECAL_TSOS_globalPosition.y(),
+					     Track_propagatedonECAL_TSOS_globalPosition.z());
       propTrack_XYZPoint=validpropTrack_XYZPoint;
     }
-    return (propTrack_XYZPoint);
+
+    return propTrack_XYZPoint;
   }
 
 

@@ -30,6 +30,8 @@
 
 #include "DataFormats/JetReco/interface/JetCollection.h"
 
+#include "RecoTauTag/TauTagTools/interface/ECALBounds.h"
+
 class  CaloRecoTauTagInfoAlgorithm  {
  public:
   CaloRecoTauTagInfoAlgorithm(){}  
@@ -64,6 +66,8 @@ class  CaloRecoTauTagInfoAlgorithm  {
   // 
   edm::InputTag EBRecHitsLabel_,EERecHitsLabel_,ESRecHitsLabel_; 
   edm::InputTag BarrelBasicClusters_,EndcapBasicClusters_;
+
+  ECALBounds ecalBounds_;
 };
 #endif 
 

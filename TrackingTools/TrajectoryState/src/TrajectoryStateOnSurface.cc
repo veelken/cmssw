@@ -34,3 +34,8 @@ update(const LocalTrajectoryParameters& p,
      *this = TrajectoryStateOnSurface(1., p, err, aSurface, field, side );
     }
 }
+
+TrajectoryStateOnSurface::~TrajectoryStateOnSurface()
+{
+  //std::cout << "<TrajectoryStateOnSurface::~TrajectoryStateOnSurface>:" << std::endl;
+}

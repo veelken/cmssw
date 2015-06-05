@@ -32,7 +32,7 @@ namespace TauTagTools{
   std::vector<reco::PFCandidatePtr> filteredPFChargedHadrCands(std::vector<reco::PFCandidatePtr> theInitialPFCands,double ChargedHadrCand_tkminPt,int ChargedHadrCand_tkminPixelHitsn,int ChargedHadrCand_tkminTrackerHitsn,double ChargedHadrCand_tkmaxipt,double ChargedHadrCand_tkmaxChi2,double ChargedHadrCand_tktorefpointmaxDZ,reco::Vertex pV, double refpoint_Z);
   std::vector<reco::PFCandidatePtr> filteredPFNeutrHadrCands(std::vector<reco::PFCandidatePtr> theInitialPFCands,double NeutrHadrCand_HcalclusMinEt);
   std::vector<reco::PFCandidatePtr> filteredPFGammaCands(std::vector<reco::PFCandidatePtr> theInitialPFCands,double GammaCand_EcalclusMinEt);
-  math::XYZPoint propagTrackECALSurfContactPoint(const MagneticField*,reco::TrackRef); 
+  math::XYZPoint propagTrackECALSurfContactPoint(const MagneticField*, const reco::TrackRef&, const ECALBounds&);
 
   TFormula computeConeSizeTFormula(const std::string& ConeSizeFormula,const char* errorMessage);
   void replaceSubStr(std::string& s,const std::string& oldSubStr,const std::string& newSubStr); 

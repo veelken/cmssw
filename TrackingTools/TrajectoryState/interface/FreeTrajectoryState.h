@@ -79,6 +79,11 @@ public:
     theCurvilinearError(aCurvilinearError)  
   {}
   
+  ~FreeTrajectoryState() 
+  { 
+    //std::cout << "<FreeTrajectoryState::~FreeTrajectoryState>:" << std::endl;
+  }
+
 // access
 // propagate access to parameters
   GlobalPoint position() const {

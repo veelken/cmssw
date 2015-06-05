@@ -89,7 +89,7 @@ CaloTau CaloRecoTauAlgorithm::buildCaloTau(edm::Event& iEvent,const edm::EventSe
     }
     
     if(MagneticField_!=0){ 
-      math::XYZPoint mypropagleadTrackECALSurfContactPoint=TauTagTools::propagTrackECALSurfContactPoint(MagneticField_,myleadTk);
+      math::XYZPoint mypropagleadTrackECALSurfContactPoint=TauTagTools::propagTrackECALSurfContactPoint(MagneticField_,myleadTk,ecalBounds_);
       if(mypropagleadTrackECALSurfContactPoint.R()!=0.){
 	double myleadTrackHCAL3x3hottesthitDEta=0.;
 	double myleadTrackHCAL3x3hottesthitEt=0.;

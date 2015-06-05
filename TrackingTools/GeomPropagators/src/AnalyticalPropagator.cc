@@ -28,6 +28,8 @@ std::pair<TrajectoryStateOnSurface,double>
 AnalyticalPropagator::propagateWithPath(const FreeTrajectoryState& fts, 
 					const Plane& plane) const
 {
+  //std::cout << "<AnalyticalPropagator::propagateWithPath (Plane)>:" << std::endl;
+  
   // check curvature
   float rho = fts.transverseCurvature();
   
@@ -71,6 +73,8 @@ std::pair<TrajectoryStateOnSurface,double>
 AnalyticalPropagator::propagateWithPath(const FreeTrajectoryState& fts, 
 					const Cylinder& cylinder) const
 {
+  //std::cout << "<AnalyticalPropagator::propagateWithPath (Cylinder)>:" << std::endl;
+
   // check curvature
   auto rho = fts.transverseCurvature();
 

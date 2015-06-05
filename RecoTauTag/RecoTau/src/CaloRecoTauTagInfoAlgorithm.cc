@@ -135,15 +135,20 @@ std::vector<DetId> CaloRecoTauTagInfoAlgorithm::getVectorDetId(const CaloJetRef&
 
 
 std::vector<BasicClusterRef> CaloRecoTauTagInfoAlgorithm::getNeutralEcalBasicClusters(edm::Event& theEvent,const edm::EventSetup& theEventSetup,const CaloJetRef& theCaloJet,const TrackRefVector& theTracks,float theECALBasicClustersAroundCaloJet_DRConeSize,float theECALBasicClusterminE,float theECALBasicClusterpropagTrack_matchingDRConeSize){
+  //std::cout << "<CaloRecoTauTagInfoAlgorithm::getNeutralEcalBasicClusters>:" << std::endl;
   std::vector<math::XYZPoint> thepropagTracksECALSurfContactPoints;
+
   edm::ESHandle<MagneticField> theMF;
   theEventSetup.get<IdealMagneticFieldRecord>().get(theMF);
   const MagneticField* theMagField=theMF.product();
+
   for(TrackRefVector::const_iterator i_Track=theTracks.begin();i_Track!=theTracks.end();i_Track++){
-    math::XYZPoint thepropagTrackECALSurfContactPoint=TauTagTools::propagTrackECALSurfContactPoint(theMagField,*i_Track);
-    if(thepropagTrackECALSurfContactPoint.R()!=0.) thepropagTracksECALSurfContactPoints.push_back(thepropagTrackECALSurfContactPoint);
+    math::XYZPoint thepropagTrackECALSurfContactPoint=TauTagTools::propagTrackECALSurfContactPoint(theMagField,*i_Track,ecalBounds_);
+    if(thepropagTrackECALSurfContactPoint.R()!=0.) {
+      thepropagTracksECALSurfContactPoints.push_back(thepropagTrackECALSurfContactPoint);
+    }
   }
-  
+
   math::XYZPoint aCaloJetFakePosition((*theCaloJet).px(),(*theCaloJet).py(),(*theCaloJet).pz());
     
   std::vector<BasicClusterRef> theBasicClusters; 
@@ -151,34 +156,42 @@ std::vector<BasicClusterRef> CaloRecoTauTagInfoAlgorithm::getNeutralEcalBasicClu
   edm::Handle<BasicClusterCollection> theBarrelBCCollection;
   //  theEvent.getByLabel("islandBasicClusters","islandBarrelBasicClusters",theBarrelBCCollection);
   theEvent.getByLabel(BarrelBasicClusters_,theBarrelBCCollection);
+
   for(unsigned int i_BC=0;i_BC!=theBarrelBCCollection->size();i_BC++) { 
     BasicClusterRef theBasicClusterRef(theBarrelBCCollection,i_BC);    
     if (theBasicClusterRef.isNull()) continue;  
+
     if (ROOT::Math::VectorUtil::DeltaR(aCaloJetFakePosition,(*theBasicClusterRef).position())<=theECALBasicClustersAroundCaloJet_DRConeSize && (*theBasicClusterRef).energy()>=theECALBasicClusterminE) theBasicClusters.push_back(theBasicClusterRef);
   }
   edm::Handle<BasicClusterCollection> theEndcapBCCollection;
   //  theEvent.getByLabel("islandBasicClusters","islandEndcapBasicClusters",theEndcapBCCollection);
   theEvent.getByLabel(EndcapBasicClusters_,theEndcapBCCollection);
+
   for(unsigned int j_BC=0;j_BC!=theEndcapBCCollection->size();j_BC++) { 
     BasicClusterRef theBasicClusterRef(theEndcapBCCollection,j_BC); 
     if (theBasicClusterRef.isNull()) continue;  
+
     if (ROOT::Math::VectorUtil::DeltaR(aCaloJetFakePosition,(*theBasicClusterRef).position())<=theECALBasicClustersAroundCaloJet_DRConeSize && (*theBasicClusterRef).energy()>=theECALBasicClusterminE) theBasicClusters.push_back(theBasicClusterRef);
   }  
-  
+
   std::vector<BasicClusterRef> theNeutralBasicClusters=theBasicClusters;  
-  std::vector<BasicClusterRef>::iterator kmatchedBasicCluster;
   for (std::vector<math::XYZPoint>::iterator ipropagTrackECALSurfContactPoint=thepropagTracksECALSurfContactPoints.begin();ipropagTrackECALSurfContactPoint!=thepropagTracksECALSurfContactPoints.end();ipropagTrackECALSurfContactPoint++) {
-    double theMatchedEcalBasicClusterpropagTrack_minDR=theECALBasicClusterpropagTrack_matchingDRConeSize;
-    bool Track_matchedwithEcalBasicCluster=false;
-    for (std::vector<BasicClusterRef>::iterator jBasicCluster=theNeutralBasicClusters.begin();jBasicCluster!=theNeutralBasicClusters.end();jBasicCluster++) {
+    double theMatchedEcalBasicClusterpropagTrack_minDR = theECALBasicClusterpropagTrack_matchingDRConeSize;
+    bool Track_matchedwithEcalBasicCluster = false;
+    std::vector<BasicClusterRef>::iterator kmatchedBasicCluster;
+    for (std::vector<BasicClusterRef>::iterator jBasicCluster = theNeutralBasicClusters.begin();jBasicCluster!=theNeutralBasicClusters.end();jBasicCluster++) {
       if(ROOT::Math::VectorUtil::DeltaR((*ipropagTrackECALSurfContactPoint),(**jBasicCluster).position())<theMatchedEcalBasicClusterpropagTrack_minDR){
-      	Track_matchedwithEcalBasicCluster=true;
-	theMatchedEcalBasicClusterpropagTrack_minDR=ROOT::Math::VectorUtil::DeltaR((*ipropagTrackECALSurfContactPoint),(**jBasicCluster).position());
+      	Track_matchedwithEcalBasicCluster = true;
+	theMatchedEcalBasicClusterpropagTrack_minDR = ROOT::Math::VectorUtil::DeltaR((*ipropagTrackECALSurfContactPoint),(**jBasicCluster).position());
 	kmatchedBasicCluster=jBasicCluster;
       }
     }
-    if(Track_matchedwithEcalBasicCluster) kmatchedBasicCluster=theNeutralBasicClusters.erase(kmatchedBasicCluster);
+
+    if(Track_matchedwithEcalBasicCluster) {
+      kmatchedBasicCluster=theNeutralBasicClusters.erase(kmatchedBasicCluster);
+    }
   }
+
   return theNeutralBasicClusters;
 }
 

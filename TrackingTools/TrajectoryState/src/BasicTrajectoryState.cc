@@ -37,7 +37,11 @@ namespace {
 }
 #endif
 
-BasicTrajectoryState::~BasicTrajectoryState(){}
+BasicTrajectoryState::~BasicTrajectoryState()
+{
+  //std::cout << "<BasicTrajectoryState::~BasicTrajectoryState>:" << std::endl;
+}
+
 BasicTrajectoryState::
 BasicTrajectoryState(const SurfaceType& aSurface) :
   theLocalError(InvalidError()),
