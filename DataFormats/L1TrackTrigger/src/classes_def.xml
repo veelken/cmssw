@@ -21,8 +21,6 @@
   <class name="vector<TTCluster<edm::Ref<edm::DetSetVector<Phase2TrackerDigi>,Phase2TrackerDigi,edm::refhelper::FindForDetSetVector<Phase2TrackerDigi> > > >" />
   <class name="vector<TTStub<edm::Ref<edm::DetSetVector<Phase2TrackerDigi>,Phase2TrackerDigi,edm::refhelper::FindForDetSetVector<Phase2TrackerDigi> > > >" />
   <class name="vector<TTTrack<edm::Ref<edm::DetSetVector<Phase2TrackerDigi>,Phase2TrackerDigi,edm::refhelper::FindForDetSetVector<Phase2TrackerDigi> > > >" />
-  <class name="Ref_Phase2TrackerDigi_" />
-  <class name="std::vector<Ref_Phase2TrackerDigi_>" />
   <class pattern="TTCluster<*>" />
   <class pattern="std::vector<TTCluster<*>>" />
   <class pattern="edm::Wrapper<std::vector<TTCluster<*>>>" />
