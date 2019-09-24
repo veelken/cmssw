@@ -10,7 +10,7 @@ pfClustersFromHGC3DClusters = cms.EDProducer("PFClusterProducerFromHGC3DClusters
         preselection = cms.string(""),
         method = cms.string(""), # "" to be disabled
         variables = cms.VPSet(
-            cms.PSet(name = cms.string("eta"), value = cms.string("eta()")),
+            cms.PSet(name = cms.string("fabs(eta)"), value = cms.string("eta()")),
             cms.PSet(name = cms.string("coreShowerLength"), value = cms.string("coreShowerLength()")),
             cms.PSet(name = cms.string("maxLayer"), value = cms.string("maxLayer()")),
             cms.PSet(name = cms.string("hOverE"), value = cms.string("hOverE()")),
@@ -24,7 +24,7 @@ pfClustersFromHGC3DClusters = cms.EDProducer("PFClusterProducerFromHGC3DClusters
         preselection = cms.string(""),
         method = cms.string(""), # "" to be disabled
         variables = cms.VPSet(
-            cms.PSet(name = cms.string("eta"), value = cms.string("eta()")),
+            cms.PSet(name = cms.string("fabs(eta)"), value = cms.string("eta()")),
             cms.PSet(name = cms.string("coreShowerLength"), value = cms.string("coreShowerLength()")),
             cms.PSet(name = cms.string("maxLayer"), value = cms.string("maxLayer()")),
             cms.PSet(name = cms.string("sigmaPhiPhiTot"), value = cms.string("sigmaPhiPhiTot()")),

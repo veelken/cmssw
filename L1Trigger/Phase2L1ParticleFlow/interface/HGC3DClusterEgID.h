@@ -33,15 +33,11 @@ namespace l1tpf {
                 for (const auto & psvar : pset.getParameter<std::vector<edm::ParameterSet>>("variables")) {
                     variables_.emplace_back(psvar.getParameter<std::string>("name"), psvar.getParameter<std::string>("value"));
                 }
-                for (const auto & psvar : pset.getParameter<std::vector<edm::ParameterSet>>("spectators")) {
-                    spectators_.emplace_back(psvar.getParameter<std::string>("name"), psvar.getParameter<std::string>("value"));
-                }
             }
             
             void prepareTMVA() {
                 // Declare the variables
                 for (auto & var : variables_) var.declare(*reader_);
-                for (auto & var : spectators_) var.declareSpectator(*reader_);
                 // then read the weights
                 if (weightsFile_[0] != '/' && weightsFile_[0] != '.') {
                     weightsFile_ = edm::FileInPath(weightsFile_).fullPath();
@@ -52,7 +48,6 @@ namespace l1tpf {
             float passID(l1t::HGCalMulticluster c, l1t::PFCluster &cpf) {
                 if (preselection_(c)) {
                     for (auto & var : variables_) var.fill(c);
-                    for (auto & var : spectators_) var.fill(c);
                     float mvaOut = reader_->EvaluateMVA(method_);
                     if(isPUFilter_) cpf.setEgVsPUMVAOut(mvaOut);
                     else cpf.setEgVsPionMVAOut(mvaOut);
@@ -74,8 +69,10 @@ namespace l1tpf {
                     Var(const std::string & name, const std::string & expr) : 
                         name_(name), expr_(expr) {}
                     void declare(TMVA::Reader & r) { r.AddVariable(name_, &val_); }
-                    void declareSpectator(TMVA::Reader & r) { r.AddSpectator(name_, &val_); }
-                    void fill(const l1t::HGCalMulticluster & c) { val_ = expr_(c); }
+                    void fill(const l1t::HGCalMulticluster & c) {
+			    if(name_ == "fabs(eta)") val_ = fabs(expr_(c));
+			    else val_ = expr_(c);
+		    }
                 private:
                     std::string name_;
                     StringObjectFunction<l1t::HGCalMulticluster> expr_;
@@ -84,7 +81,7 @@ namespace l1tpf {
 
             bool isPUFilter_;
             StringCutObjectSelector<l1t::HGCalMulticluster> preselection_;
-            std::vector<Var> variables_, spectators_;
+            std::vector<Var> variables_;
             std::string method_, weightsFile_;
             std::unique_ptr<TMVA::Reader> reader_;
             StringObjectFunction<l1t::HGCalMulticluster> wp_;
