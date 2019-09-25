@@ -69,10 +69,7 @@ namespace l1tpf {
                     Var(const std::string & name, const std::string & expr) : 
                         name_(name), expr_(expr) {}
                     void declare(TMVA::Reader & r) { r.AddVariable(name_, &val_); }
-                    void fill(const l1t::HGCalMulticluster & c) {
-			    if(name_ == "fabs(eta)") val_ = fabs(expr_(c));
-			    else val_ = expr_(c);
-		    }
+                    void fill(const l1t::HGCalMulticluster & c) { val_ = expr_(c); }
                 private:
                     std::string name_;
                     StringObjectFunction<l1t::HGCalMulticluster> expr_;
