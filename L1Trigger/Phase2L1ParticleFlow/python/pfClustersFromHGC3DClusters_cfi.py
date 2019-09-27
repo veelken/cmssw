@@ -8,9 +8,9 @@ pfClustersFromHGC3DClusters = cms.EDProducer("PFClusterProducerFromHGC3DClusters
     emVsPionID = cms.PSet(
         isPUFilter = cms.bool(False),
         preselection = cms.string(""),
-        method = cms.string(""), # "" to be disabled
+        method = cms.string(""), # "" to be disabled, "BDT" to be enabled
         variables = cms.VPSet(
-            cms.PSet(name = cms.string("fabs(eta)"), value = cms.string("eta()")),
+            cms.PSet(name = cms.string("fabs(eta)"), value = cms.string("abs(eta())")),
             cms.PSet(name = cms.string("coreShowerLength"), value = cms.string("coreShowerLength()")),
             cms.PSet(name = cms.string("maxLayer"), value = cms.string("maxLayer()")),
             cms.PSet(name = cms.string("hOverE"), value = cms.string("hOverE()")),
@@ -22,9 +22,9 @@ pfClustersFromHGC3DClusters = cms.EDProducer("PFClusterProducerFromHGC3DClusters
     emVsPUID = cms.PSet(
         isPUFilter = cms.bool(True),
         preselection = cms.string(""),
-        method = cms.string(""), # "" to be disabled
+        method = cms.string(""), # "" to be disabled, "BDT" to be enabled
         variables = cms.VPSet(
-            cms.PSet(name = cms.string("fabs(eta)"), value = cms.string("eta()")),
+            cms.PSet(name = cms.string("fabs(eta)"), value = cms.string("abs(eta())")),
             cms.PSet(name = cms.string("coreShowerLength"), value = cms.string("coreShowerLength()")),
             cms.PSet(name = cms.string("maxLayer"), value = cms.string("maxLayer()")),
             cms.PSet(name = cms.string("sigmaPhiPhiTot"), value = cms.string("sigmaPhiPhiTot()")),
