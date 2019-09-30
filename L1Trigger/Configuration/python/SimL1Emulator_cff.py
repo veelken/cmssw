@@ -135,6 +135,7 @@ phase2_SimL1Emulator += L1TkPrimaryVertex
 phase2_SimL1Emulator += L1TkElectronsCrystal
 phase2_SimL1Emulator += L1TkIsoElectronsCrystal
 phase2_SimL1Emulator += L1TkElectronsLooseCrystal
+phase2_SimL1Emulator += L1WP2Electrons
 phase2_SimL1Emulator += L1TkPhotonsCrystal
 phase2_SimL1Emulator += L1TkElectronsHGC
 phase2_SimL1Emulator += L1TkIsoElectronsHGC
@@ -152,7 +153,7 @@ phase2_SimL1Emulator += L1TkMuonsTP
 phase2_SimL1Emulator += L1TkGlbMuons
 phase2_SimL1Emulator += L1TkTauFromCalo
 phase2_SimL1Emulator += L1TrackerTaus
-phase2_SimL1Emulator += L1TkEGTaus
+phase2_SimL1Emulator += L1TkEGTaus 
 phase2_SimL1Emulator += L1TkCaloTaus
 
 

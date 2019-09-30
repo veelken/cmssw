@@ -24,6 +24,9 @@ pL1TkIsoElectronsCrystal = cms.Path( L1TkIsoElectronsCrystal )
 from L1Trigger.L1TTrackMatch.L1TkEmParticleProducer_cfi import L1TkPhotonsCrystal
 pL1TkPhotonsCrystal = cms.Path( L1TkPhotonsCrystal )
 
+from L1Trigger.L1TTrackMatch.L1WP2ElectronProducer_cfi import L1WP2Electrons
+pL1WP2Electrons = cms.Path( L1WP2Electrons)
+
 # Phase II EG seeds, Endcap (HGC):
 # Two objects for now to follow 2017 discussions, merging collections would be nice...
 
