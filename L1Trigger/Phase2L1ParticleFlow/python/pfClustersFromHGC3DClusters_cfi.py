@@ -8,7 +8,7 @@ pfClustersFromHGC3DClusters = cms.EDProducer("PFClusterProducerFromHGC3DClusters
     emVsPionID = cms.PSet(
         isPUFilter = cms.bool(False),
         preselection = cms.string(""),
-        method = cms.string(""), # "" to be disabled, "BDT" to be enabled
+        method = cms.string("BDT"), # "" to be disabled, "BDT" to be enabled
         variables = cms.VPSet(
             cms.PSet(name = cms.string("fabs(eta)"), value = cms.string("abs(eta())")),
             cms.PSet(name = cms.string("coreShowerLength"), value = cms.string("coreShowerLength()")),
@@ -22,7 +22,7 @@ pfClustersFromHGC3DClusters = cms.EDProducer("PFClusterProducerFromHGC3DClusters
     emVsPUID = cms.PSet(
         isPUFilter = cms.bool(True),
         preselection = cms.string(""),
-        method = cms.string(""), # "" to be disabled, "BDT" to be enabled
+        method = cms.string("BDT"), # "" to be disabled, "BDT" to be enabled
         variables = cms.VPSet(
             cms.PSet(name = cms.string("fabs(eta)"), value = cms.string("abs(eta())")),
             cms.PSet(name = cms.string("coreShowerLength"), value = cms.string("coreShowerLength()")),
