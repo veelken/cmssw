@@ -10,6 +10,7 @@
 <use   name="Geometry/HcalTowerAlgo"/>
 <use   name="PhysicsTools/TensorFlow"/>
 <use   name="tensorflow"/>
+<use   name="CommonTools/MVAUtils"/>
 <export>
   <lib name="1"/>
 </export>
