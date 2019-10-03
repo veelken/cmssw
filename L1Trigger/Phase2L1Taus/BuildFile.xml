@@ -27,6 +27,8 @@
 <use   name="Geometry/HcalTowerAlgo"/>
 <use   name="Geometry/Records"/>
 <use   name="PhysicsTools/TensorFlow"/>
+<use   name="tensorflow"/>
+<use   name="CommonTools/MVAUtils"/>
 <use   name="SimDataFormats/GeneratorProducts"/>
 <use   name="SimDataFormats/Track"/>
 <use   name="boost"/>
