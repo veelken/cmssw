@@ -8,36 +8,28 @@ pfClustersFromHGC3DClusters = cms.EDProducer("PFClusterProducerFromHGC3DClusters
     emVsPionID = cms.PSet(
         isPUFilter = cms.bool(False),
         preselection = cms.string(""),
-        method = cms.string(""), # "" to be disabled
+        method = cms.string("BDT"), # "" to be disabled, "BDT" to be enabled
         variables = cms.VPSet(
-            cms.PSet(name = cms.string("eta"), value = cms.string("eta()")),
+            cms.PSet(name = cms.string("fabs(eta)"), value = cms.string("abs(eta())")),
             cms.PSet(name = cms.string("coreShowerLength"), value = cms.string("coreShowerLength()")),
             cms.PSet(name = cms.string("maxLayer"), value = cms.string("maxLayer()")),
             cms.PSet(name = cms.string("hOverE"), value = cms.string("hOverE()")),
             cms.PSet(name = cms.string("sigmaZZ"), value = cms.string("sigmaZZ()")),
         ),
-        spectators = cms.VPSet( #Dummy variables, they don't participate in the weights but they need to be there
-            cms.PSet(name = cms.string("genpt"), value = cms.string("pt()")),
-            cms.PSet(name = cms.string("genid"), value = cms.string("pdgId()")),
-        ),
-        weightsFile = cms.string("/eos/cms/store/cmst3/user/evourlio/PF_L1_SelectionWeights/PhotonVsChargedPion/MVAnalysis_BDT.weights.xml"),
-        wp = cms.string("-0.02")
+        weightsFile = cms.string("L1Trigger/Phase2L1ParticleFlow/data/hgcal_egID/Photon_vs_Pion_BDTweights.xml.gz"),
+        wp = cms.string("0.01")
     ),
     emVsPUID = cms.PSet(
         isPUFilter = cms.bool(True),
         preselection = cms.string(""),
-        method = cms.string(""), # "" to be disabled
+        method = cms.string("BDT"), # "" to be disabled, "BDT" to be enabled
         variables = cms.VPSet(
-            cms.PSet(name = cms.string("eta"), value = cms.string("eta()")),
+            cms.PSet(name = cms.string("fabs(eta)"), value = cms.string("abs(eta())")),
             cms.PSet(name = cms.string("coreShowerLength"), value = cms.string("coreShowerLength()")),
             cms.PSet(name = cms.string("maxLayer"), value = cms.string("maxLayer()")),
             cms.PSet(name = cms.string("sigmaPhiPhiTot"), value = cms.string("sigmaPhiPhiTot()")),
         ),
-        spectators = cms.VPSet( #Dummy variables, they don't participate in the weights but they need to be there
-            cms.PSet(name = cms.string("genpt"), value = cms.string("pt()")),
-            cms.PSet(name = cms.string("genid"), value = cms.string("pdgId()")),
-        ),
-        weightsFile = cms.string("/eos/cms/store/cmst3/user/evourlio/PF_L1_SelectionWeights/PhotonPionVsPU/MVAnalysis_BDT.weights.xml"),
+        weightsFile = cms.string("L1Trigger/Phase2L1ParticleFlow/data/hgcal_egID/Photon_Pion_vs_Neutrino_BDTweights.xml.gz"),
         wp = cms.string("-0.02")
     ),
     emOnly = cms.bool(False),
