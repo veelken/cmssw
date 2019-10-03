@@ -176,6 +176,12 @@ phase2_SimL1Emulator += l1PFMets
 
 # PFTaus(HPS)
 # ########################################################################
+from L1Trigger.L1CaloTrigger.Phase1L1TJetProducer_cfi import Phase1L1TJetProducer 
+l1pfPhase1L1TJetProducer = Phase1L1TJetProducer.clone()
+phase2_SimL1Emulator += l1pfPhase1L1TJetProducer
+
+# PFTaus(HPS)
+# ########################################################################
 from L1Trigger.Phase2L1Taus.L1PFTauProducer_cff import L1PFTauProducer
 l1pfTauProducer = L1PFTauProducer.clone()
 l1pfTauProducer.L1PFObjects = cms.InputTag("l1pfCandidates","PF")
