@@ -116,6 +116,13 @@ phase2_SimL1Emulator += l1CaloJetsSequence
 from L1Trigger.L1TTrackMatch.L1TTrackerPlusStubs_cfi import *
 l1KBmtfStubMatchedMuons = l1StubMatchedMuons.clone()
 phase2_SimL1Emulator += l1KBmtfStubMatchedMuons
+
+#  Overlap L1Tk + Stub
+# ########################################################################
+from L1Trigger.L1TMuonBayes.simBayesMuCorrelatorTrackProducer_cfi import *
+l1TkMuonStubOverlap = simBayesMuCorrelatorTrackProducer.clone()
+phase2_SimL1Emulator += l1TkMuonStubOverlap
+
 # EndCap L1Tk + Stub
 # ########################################################################
 from L1Trigger.L1TTrackMatch.L1TkMuonStubProducer_cfi import *
