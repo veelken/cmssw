@@ -343,7 +343,7 @@ namespace reco::tau {
     }
   }
   
-  void fillDescriptions(edm::ParameterSetDescription& desc_qualityCuts)
+  void RecoTauQualityCuts::fillDescriptions(edm::ParameterSetDescription& desc_qualityCuts)
   {
     edm::ParameterSetDescription desc_signalQualityCuts;
     desc_signalQualityCuts.add<double>("minTrackPt", 0.5);

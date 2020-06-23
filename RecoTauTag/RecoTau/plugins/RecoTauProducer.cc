@@ -252,7 +252,7 @@ void RecoTauProducer::fillDescriptions(edm::ConfigurationDescriptions& descripti
     vpsd_modifiers.add<std::string>("plugin");
     vpsd_modifiers.add<int>("verbosity", 0);
 
-    vpsd_modifiers.add<edm::ParameterSetDescription>("qualityCuts", pset_qualityCuts);
+    vpsd_modifiers.add<edm::ParameterSetDescription>("qualityCuts", desc_qualityCuts);
     vpsd_modifiers.addOptional<edm::InputTag>("ElectronPreIDProducer");
     vpsd_modifiers.addOptional<std::string>("DataType");
     vpsd_modifiers.addOptional<double>("maximumForElectrionPreIDOutput");
