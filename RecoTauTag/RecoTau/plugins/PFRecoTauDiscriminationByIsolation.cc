@@ -499,7 +499,15 @@ double PFRecoTauDiscriminationByIsolation::discriminate(const PFTauRef& pfTau) c
     double neutralPt = 0.;
     double weightedNeutralPt = 0.;
     for (auto const& isoObject : isoCharged_) {
-      chargedPt += isoObject->pt();
+      //-------------------------------------------------------------------------
+      // CV: fix for Phase-2 HLT tau trigger studies
+      //    (pT of PFCandidates within HGCal acceptance is significantly higher than track pT !!)
+      //chargedPt += isoObject->pt();
+      double trackPt  = ( isoObject->bestTrack() ) ? isoObject->bestTrack()->pt() : 0.;
+      double pfCandPt = isoObject->pt();
+      chargedPt += trackPt;
+      neutralPt += std::max(0., pfCandPt - trackPt);
+      //-------------------------------------------------------------------------
     }
     if (!calculateWeights_) {
       for (auto const& isoObject : isoNeutral_) {
