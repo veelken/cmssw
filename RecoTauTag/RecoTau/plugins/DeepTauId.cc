@@ -4,6 +4,7 @@
  * Tau identification using Deep NN.
  *
  * \author Konstantin Androsov, INFN Pisa
+ *         Christian Veelken, Tallinn 
  */
 
 #include "RecoTauTag/RecoTau/interface/DeepTauBase.h"
@@ -859,6 +860,7 @@ public:
     desc.add<unsigned>("version", 2);
     desc.add<int>("debug_level", 0);
     desc.add<bool>("disable_dxy_pca", false);
+    desc.add<bool>("disable_hcalFraction_workaround", false);
     desc.add<bool>("save_inputs", false);
 
     desc.add<std::vector<std::string>>("VSeWP");
@@ -877,6 +879,7 @@ public:
         version(cfg.getParameter<unsigned>("version")),
         debug_level(cfg.getParameter<int>("debug_level")),        
         disable_dxy_pca_(cfg.getParameter<bool>("disable_dxy_pca")),
+        disable_hcalFraction_workaround_(cfg.getParameter<bool>("disable_hcalFraction_workaround")),
         inner_grid(nullptr),
         outer_grid(nullptr),
         save_inputs(cfg.getParameter<bool>("save_inputs")),
@@ -1887,14 +1890,18 @@ private:
                 : 0;
       }
       float hcal_fraction = 0.;
-      //if (pfCands.at(index_chH).pdgId() == 1 || pfCands.at(index_chH).pdgId() == 130) {
-      //  hcal_fraction = pfCands.at(index_chH).hcalFraction();
-      //} else if (pfCands.at(index_chH).isIsolatedChargedHadron()) {
-      //  hcal_fraction = pfCands.at(index_chH).rawHcalFraction();
-      //}
-      // CV: use consistent definition for pfCand_chHad_hcalFraction 
-      //     in DeepTauId.cc code and in TauMLTools/Production/plugins/TauTupleProducer.cc
-      hcal_fraction = pfCands.at(index_chH).hcalFraction();
+      if ( disable_hcalFraction_workaround_ ) {
+        // CV: use consistent definition for pfCand_chHad_hcalFraction 
+        //     in DeepTauId.cc code and in TauMLTools/Production/plugins/TauTupleProducer.cc
+        hcal_fraction = pfCands.at(index_chH).hcalFraction();
+      } else {
+        // CV: backwards compatibility with DeepTau training v2p1 used during Run 2
+        if (pfCands.at(index_chH).pdgId() == 1 || pfCands.at(index_chH).pdgId() == 130) {
+          hcal_fraction = pfCands.at(index_chH).hcalFraction();
+        } else if (pfCands.at(index_chH).isIsolatedChargedHadron()) {
+          hcal_fraction = pfCands.at(index_chH).rawHcalFraction();
+        }
+      }
       get(dnn::pfCand_chHad_hcalFraction) = getValue(hcal_fraction);
       get(dnn::pfCand_chHad_rawCaloFraction) = getValueLinear(pfCands.at(index_chH).rawCaloFraction(), 0.f, 2.6f, true);    
     }
@@ -1914,14 +1921,18 @@ private:
       get(dnn::pfCand_nHad_puppiWeight) = getValue(pfCands.at(index_nH).puppiWeight());
       get(dnn::pfCand_nHad_puppiWeightNoLep) = getValue(pfCands.at(index_nH).puppiWeightNoLep());
       float hcal_fraction = 0.;
-      //if (pfCands.at(index_nH).pdgId() == 1 || pfCands.at(index_nH).pdgId() == 130) {
-      //  hcal_fraction = pfCands.at(index_nH).hcalFraction();
-      //} else if (pfCands.at(index_nH).isIsolatedChargedHadron()) {
-      //  hcal_fraction = pfCands.at(index_nH).rawHcalFraction();
-      //}
-      // CV: use consistent definition for pfCand_chHad_hcalFraction 
-      //     in DeepTauId.cc code and in TauMLTools/Production/plugins/TauTupleProducer.cc
-      hcal_fraction = pfCands.at(index_nH).hcalFraction();
+      if ( disable_hcalFraction_workaround_ ) {
+        // CV: use consistent definition for pfCand_chHad_hcalFraction 
+        //     in DeepTauId.cc code and in TauMLTools/Production/plugins/TauTupleProducer.cc
+        hcal_fraction = pfCands.at(index_nH).hcalFraction();
+      } else {
+        // CV: backwards compatibility with DeepTau training v2p1 used during Run 2
+        if (pfCands.at(index_nH).pdgId() == 1 || pfCands.at(index_nH).pdgId() == 130) {
+          hcal_fraction = pfCands.at(index_nH).hcalFraction();
+        } else if (pfCands.at(index_nH).isIsolatedChargedHadron()) {
+          hcal_fraction = pfCands.at(index_nH).rawHcalFraction();
+        }
+      }
       get(dnn::pfCand_nHad_hcalFraction) = getValue(hcal_fraction);
     }
   }
@@ -2272,6 +2283,7 @@ private:
   const unsigned version;
   const int debug_level;
   const bool disable_dxy_pca_;
+  const bool disable_hcalFraction_workaround_;
   std::unique_ptr<tensorflow::Tensor> tauBlockTensor_;
   std::array<std::unique_ptr<tensorflow::Tensor>, 2> eGammaTensor_, muonTensor_, hadronsTensor_, convTensor_,
       zeroOutputTensor_;
