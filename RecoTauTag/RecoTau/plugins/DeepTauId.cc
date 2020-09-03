@@ -1040,7 +1040,7 @@ private:
       std::cout << "<saveInputs>: block_name = " << block_name << std::endl;
     }
     if ( !is_first_block ) (*json_file) << ", ";
-    (*json_file) << "\"" << block_name << "\": [[";
+    (*json_file) << "\"" << block_name << "\": [";
     if ( block_name == "input_tau" ) {
       for (int input_index = 0; input_index < n_inputs; ++input_index) {
         float input = inputs.matrix<float>()(0, input_index);
@@ -1082,7 +1082,7 @@ private:
         (*json_file) << "]";
       }
     }
-    (*json_file) << "]]";
+    (*json_file) << "]";
     is_first_block = false;
   }
  
